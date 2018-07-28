@@ -445,6 +445,19 @@ action_toggle_state_view_button (GSimpleAction *action,
 }
 
 static void
+action_show_current_location_menu (GSimpleAction *action,
+                                   GVariant      *state,
+                                   gpointer       user_data)
+{
+    NautilusWindow *window = user_data;
+    GtkWidget *path_bar;
+
+    path_bar = nautilus_toolbar_get_path_bar (NAUTILUS_TOOLBAR (window->toolbar));
+
+    nautilus_path_bar_show_current_location_menu (NAUTILUS_PATH_BAR (path_bar));
+}
+
+static void
 on_location_changed (NautilusWindow *window)
 {
     gtk_places_sidebar_set_location (GTK_PLACES_SIDEBAR (window->places_sidebar),
@@ -2009,6 +2022,7 @@ const GActionEntry win_entries[] =
     { "forward", action_forward },
     { "up", action_up },
     { "view-menu", action_toggle_state_view_button, NULL, "false", NULL },
+    { "current-location-menu", action_show_current_location_menu },
     { "reload", action_reload },
     { "stop", action_stop },
     { "new-tab", action_new_tab },
@@ -2087,7 +2101,7 @@ nautilus_window_initialize_actions (NautilusWindow *window)
     nautilus_application_set_accelerators (app, "win.prompt-root-location", prompt_root_location_accels);
     /* Support keyboard layouts which have a dead tilde key but not a tilde key. */
     nautilus_application_set_accelerators (app, "win.prompt-home-location", prompt_home_location_accels);
-    nautilus_application_set_accelerator (app, "win.view-menu", "F10");
+    nautilus_application_set_accelerator (app, "win.current-location-menu", "F10");
     nautilus_application_set_accelerator (app, "win.restore-tab", "<shift><control>t");
 
     /* Alt+N for the first 9 tabs */
