@@ -581,7 +581,6 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         return;
     }
 
-    view->details->ignore_button_release = FALSE;
     is_simple_click = ((button == GDK_BUTTON_PRIMARY || button == GDK_BUTTON_MIDDLE) && (n_press == 1));
 
     /* No item at this position */
@@ -756,7 +755,6 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
             if (path_selected)
             {
                 call_parent = on_expander;
-                view->details->ignore_button_release = on_expander;
             }
             else if ((state & GDK_CONTROL_MASK) != 0)
             {
@@ -788,10 +786,6 @@ on_tree_view_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
                     gtk_tree_selection_select_path (selection, l->data);
                 }
                 g_list_free_full (selected_rows, (GDestroyNotify) gtk_tree_path_free);
-            }
-            else
-            {
-                view->details->ignore_button_release = on_expander;
             }
         }
 
@@ -866,7 +860,7 @@ on_tree_view_multi_press_gesture_released (GtkGestureMultiPress *gesture,
     }
 
     view->details->drag_button = 0;
-    if (!view->details->drag_started && !view->details->ignore_button_release)
+    if (!view->details->drag_started)
     {
         GdkEventSequence *sequence;
         const GdkEvent *event;
