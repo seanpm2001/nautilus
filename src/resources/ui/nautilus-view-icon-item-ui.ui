@@ -7,9 +7,6 @@
         <property name="orientation">vertical</property>
         <property name="halign">center</property>
         <property name="valign">start</property>
-        <style>
-          <class name="icon-item-background"/>
-        </style>
         <child>
           <object class="GtkBox" id="fixed_height_box">
             <property name="orientation">vertical</property>
