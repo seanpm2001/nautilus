@@ -280,7 +280,6 @@ nautilus_deps = [
   gmodule,
   gnome_autoar,
   gnome_desktop,
-  libgd_dep,
   libhandy,
   libportal,
   nautilus_extension,
