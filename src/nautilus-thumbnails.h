@@ -24,7 +24,7 @@
 #include <gdk-pixbuf/gdk-pixbuf.h>
 #include "nautilus-file.h"
 
-#define NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE 48
+#define NAUTILUS_THUMBNAIL_MINIMUM_ICON_SIZE 32
 
 /* Returns NULL if there's no thumbnail yet. */
 void       nautilus_create_thumbnail                (NautilusFile *file);
