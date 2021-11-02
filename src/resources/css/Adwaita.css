@@ -12,6 +12,10 @@
     border-radius: 5px;
 }
 
+.nautilus-canvas-item.thumbnail {
+  -gtk-icon-shadow: 0px 1px 2px darker(@borders);
+}
+
 .nautilus-canvas-item.dim-label {
     color: mix (@theme_fg_color, @theme_bg_color, 0.50);
 }
@@ -165,6 +169,10 @@ entry.search > * {
  * drop targets to let through the default feedback style. */
 .nautilus-list-view .view:not(:drop(active)) {
     border-bottom: 1px solid @theme_bg_color;
+}
+
+.nautilus-list-view.thumbnail {
+  -gtk-icon-shadow: 0px 1px 2px darker(@borders);
 }
 
 .search-information {
