@@ -125,7 +125,7 @@ libportal = []
 libportal_gtk3 = []
 if get_option('libportal')
   libportal = dependency('libportal', version: '>= 0.3')
-  libportal_gtk3 = dependency('libportal', version: '>= 0.3')
+  libportal_gtk3 = dependency('libportal-gtk3', version: '>= 0.3')
 endif
 selinux = []
 if get_option('selinux')
