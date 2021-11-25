@@ -68,7 +68,7 @@ append_item (NautilusImagesPropertiesPage *page,
     pango_attr_list_insert (attrs, pango_attr_weight_new (PANGO_WEIGHT_BOLD));
     gtk_label_set_attributes (GTK_LABEL (name_label), attrs);
     pango_attr_list_unref (attrs);
-    gtk_container_add (GTK_CONTAINER (page->grid), name_label);
+    gtk_grid_attach_next_to (GTK_GRID (page->grid), name_label, NULL, GTK_POS_BOTTOM, 1, 1);
     gtk_widget_set_halign (name_label, GTK_ALIGN_START);
     gtk_widget_show (name_label);
 
@@ -110,6 +110,7 @@ nautilus_image_properties_page_init (NautilusImagesPropertiesPage *self)
     gtk_grid_set_row_spacing (GTK_GRID (self->grid), 6);
     gtk_grid_set_column_spacing (GTK_GRID (self->grid), 18);
     append_item (self, _("Loading…"), NULL);
+    /* GTK4: Use gtk_scrolled_window_set_child() here. */
     gtk_container_add (GTK_CONTAINER (self->page_widget), self->grid);
 
     gtk_widget_show_all (GTK_WIDGET (self->page_widget));
@@ -262,7 +263,7 @@ load_finished (NautilusImagesPropertiesPage *page)
     GtkWidget *label;
 
     label = gtk_grid_get_child_at (GTK_GRID (page->grid), 0, 0);
-    gtk_container_remove (GTK_CONTAINER (page->grid), label);
+    gtk_widget_hide (label);
 
     if (page->loader != NULL)
     {
