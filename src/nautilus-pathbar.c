@@ -85,6 +85,9 @@ struct _NautilusPathBar
 {
     GtkBox parent_instance;
 
+    GtkWidget *scrolled;
+    GtkWidget *buttons_box;
+
     GFile *current_path;
     gpointer current_button_data;
 
@@ -202,10 +205,32 @@ action_pathbar_properties (GSimpleAction *action,
 }
 
 static void
+on_adjustment_changed (GtkAdjustment *adjustment)
+{
+    /* Automatically scroll to the end, to keep the current folder visible */
+    gtk_adjustment_set_value (adjustment, gtk_adjustment_get_upper (adjustment));
+}
+
+static void
 nautilus_path_bar_init (NautilusPathBar *self)
 {
+    GtkAdjustment *adjustment;
     GtkBuilder *builder;
     g_autoptr (GError) error = NULL;
+
+    self->scrolled = gtk_scrolled_window_new (NULL, NULL);
+    /* Scroll horizontally only and don't use internal scrollbar. */
+    gtk_scrolled_window_set_policy (GTK_SCROLLED_WINDOW (self->scrolled),
+                                    /* hscrollbar-policy */ GTK_POLICY_EXTERNAL,
+                                    /* vscrollbar-policy */ GTK_POLICY_NEVER);
+    gtk_widget_set_hexpand (self->scrolled, TRUE);
+    gtk_container_add (GTK_CONTAINER (self), self->scrolled);
+
+    adjustment = gtk_scrolled_window_get_hadjustment (GTK_SCROLLED_WINDOW (self->scrolled));
+    g_signal_connect (adjustment, "changed", (GCallback) on_adjustment_changed, NULL);
+
+    self->buttons_box = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
+    gtk_container_add (GTK_CONTAINER (self->scrolled), self->buttons_box);
 
     builder = gtk_builder_new ();
 
@@ -236,7 +261,7 @@ nautilus_path_bar_init (NautilusPathBar *self)
 
     g_object_unref (builder);
 
-    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
+    gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self->buttons_box)),
                                  GTK_STYLE_CLASS_LINKED);
     gtk_style_context_add_class (gtk_widget_get_style_context (GTK_WIDGET (self)),
                                  "nautilus-path-bar");
@@ -503,7 +528,7 @@ nautilus_path_bar_clear_buttons (NautilusPathBar *self)
 
         button_data = BUTTON_DATA (self->button_list->data);
 
-        gtk_container_remove (GTK_CONTAINER (self), button_data->button);
+        gtk_container_remove (GTK_CONTAINER (self->buttons_box), button_data->button);
 
         self->button_list = g_list_remove (self->button_list, button_data);
         button_data_free (button_data);
@@ -985,7 +1010,7 @@ button_data_file_changed (NautilusFile *file,
 
                     data = BUTTON_DATA (self->button_list->data);
 
-                    gtk_container_remove (GTK_CONTAINER (self), data->button);
+                    gtk_container_remove (GTK_CONTAINER (self->buttons_box), data->button);
                     self->button_list = g_list_remove (self->button_list, data);
                     button_data_free (data);
                 }
@@ -1187,7 +1212,7 @@ nautilus_path_bar_update_path (NautilusPathBar *self,
     {
         GtkWidget *button;
         button = BUTTON_DATA (l->data)->button;
-        gtk_container_add (GTK_CONTAINER (self), button);
+        gtk_container_add (GTK_CONTAINER (self->buttons_box), button);
     }
 }
 
