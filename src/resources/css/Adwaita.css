@@ -49,10 +49,15 @@
 
 /* Path bar */
 
-.path-bar-box {
-  border-radius: 5px;
+.path-bar-box scrolledwindow {
+  border-radius: 5px 0px 0px 5px;
   border: 1px @borders solid;
+  border-right-width: 0px;
   background-color: @theme_bg_color;
+}
+
+.path-bar-box button {
+  margin: 0px;
 }
 
 .nautilus-path-bar button {
@@ -60,7 +65,6 @@
   box-shadow: none;
   border-radius: 7px;
   border-width: 0px;
-  margin: 0px;
   -gtk-icon-shadow: none;
 }
 
