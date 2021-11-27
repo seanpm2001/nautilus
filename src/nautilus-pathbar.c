@@ -557,6 +557,14 @@ nautilus_path_bar_clear_buttons (NautilusPathBar *self)
 }
 
 static void
+nautilus_path_bar_show_current_location_menu (NautilusPathBar *self)
+{
+    g_return_if_fail (NAUTILUS_IS_PATH_BAR (self));
+
+    g_signal_emit_by_name (self->current_view_menu_button, "activate");
+}
+
+static void
 button_clicked_cb (GtkButton *button,
                    gpointer   data)
 {
@@ -584,7 +592,7 @@ button_clicked_cb (GtkButton *button,
     {
         if (g_file_equal (button_data->path, self->current_path))
         {
-            gtk_popover_popup (self->current_view_menu_popover);
+            nautilus_path_bar_show_current_location_menu (self);
         }
         else
         {
@@ -711,7 +719,7 @@ on_multi_press_gesture_pressed (GtkGestureMultiPress *gesture,
         {
             if (g_file_equal (button_data->path, self->current_path))
             {
-                gtk_popover_popup (self->current_view_menu_popover);
+                nautilus_path_bar_show_current_location_menu (self);
             }
             else
             {
@@ -1103,7 +1111,7 @@ make_button_data (NautilusPathBar *self,
             button_data->label = gtk_label_new (NULL);
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 6);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, TRUE, 0);
 
             gtk_box_pack_start (GTK_BOX (child), button_data->image, FALSE, FALSE, 0);
             gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
@@ -1122,7 +1130,7 @@ make_button_data (NautilusPathBar *self,
             child = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 2);
             button_data->container = gtk_box_new (GTK_ORIENTATION_HORIZONTAL, 0);
             gtk_box_pack_start (GTK_BOX (button_data->container), separator_label, FALSE, FALSE, 0);
-            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, FALSE, 0);
+            gtk_box_pack_start (GTK_BOX (button_data->container), button_data->button, FALSE, TRUE, 0);
 
             gtk_box_pack_start (GTK_BOX (child), button_data->label, FALSE, FALSE, 0);
         }
@@ -1133,6 +1141,8 @@ make_button_data (NautilusPathBar *self,
     {
         gtk_style_context_add_class (gtk_widget_get_style_context (button_data->button),
                                      "current-dir");
+        gtk_widget_set_hexpand (button_data->button, TRUE);
+        gtk_widget_set_halign (button_data->label, GTK_ALIGN_START);
     }
 
     if (button_data->label != NULL)
